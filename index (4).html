@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>منصة متابعة الطلاب الذكية | كشف تفاعلي متكامل</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- SheetJS & Canvas Confetti -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <style>
+    :root {
+      --bg-dark: #0a0f1d;
+      --panel-bg: rgba(16, 24, 44, 0.75);
+      --panel-border: rgba(255, 255, 255, 0.08);
+      --accent-blue: #3b82f6;
+      --accent-cyan: #06b6d4;
+      --accent-purple: #8b5cf6;
+      --accent-green: #10b981;
+      --accent-amber: #f59e0b;
+      --accent-rose: #f43f5e;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --gold-star: #fbbf24;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Cairo', sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    /* Ambient Lighting Effect */
+    .glow-blob {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(130px);
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.3;
+    }
+    .blob-1 { top: -100px; right: -100px; width: 500px; height: 500px; background: radial-gradient(circle, #2563eb, transparent); }
+    .blob-2 { bottom: -100px; left: -100px; width: 550px; height: 550px; background: radial-gradient(circle, #7c3aed, transparent); }
+
+    .bg-grid {
+      position: fixed;
+      inset: 0;
+      background-image: 
+        linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+      background-size: 32px 32px;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .app-container {
+      position: relative;
+      z-index: 2;
+      width: 95%;
+      max-width: 1400px;
+      margin: 20px auto 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* Header */
+    header {
+      background: var(--panel-bg);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--panel-border);
+      border-radius: 20px;
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    }
+
+    .brand-title {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .brand-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      color: #fff;
+      box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
+    }
+
+    .brand-title h1 {
+      font-size: 1.35rem;
+      font-weight: 900;
+      background: linear-gradient(90deg, #60a5fa, #c084fc);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .brand-title p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--panel-border);
+      color: var(--text-main);
+      padding: 9px 16px;
+      border-radius: 12px;
+      font-size: 0.92rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.25s ease;
+    }
+
+    .btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.2);
+      transform: translateY(-2px);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      border-color: #60a5fa;
+      color: #fff;
+      box-shadow: 0 4px 15px rgba(37, 99, 235, 0.35);
+    }
+    .btn-primary:hover {
+      box-shadow: 0 6px 20px rgba(37, 99, 235, 0.55);
+    }
+
+    .btn-success {
+      background: linear-gradient(135deg, #059669, #10b981);
+      border-color: #34d399;
+      color: #fff;
+    }
+
+    .btn-warning {
+      background: rgba(245, 158, 11, 0.15);
+      border-color: rgba(245, 158, 11, 0.3);
+      color: #fbbf24;
+    }
+
+    .btn-danger {
+      background: rgba(244, 63, 94, 0.15);
+      border-color: rgba(244, 63, 94, 0.3);
+      color: #fda4af;
+    }
+
+    /* Stats Grid */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+    }
+
+    .stat-card {
+      background: var(--panel-bg);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--panel-border);
+      border-radius: 16px;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      left: 0;
+      height: 3px;
+    }
+    .stat-card.c-blue::after { background: var(--accent-blue); }
+    .stat-card.c-green::after { background: var(--accent-green); }
+    .stat-card.c-amber::after { background: var(--accent-amber); }
+    .stat-card.c-purple::after { background: var(--accent-purple); }
+
+    .stat-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+    }
+    .c-blue .stat-icon { background: rgba(59, 130, 246, 0.15); color: #60a5fa; }
+    .c-green .stat-icon { background: rgba(16, 185, 129, 0.15); color: #34d399; }
+    .c-amber .stat-icon { background: rgba(245, 158, 11, 0.15); color: #fbbf24; }
+    .c-purple .stat-icon { background: rgba(139, 92, 246, 0.15); color: #c084fc; }
+
+    .stat-info h3 {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+    .stat-info strong {
+      font-size: 1.45rem;
+      font-weight: 900;
+      color: #fff;
+    }
+
+    /* Controls Bar */
+    .controls-bar {
+      background: var(--panel-bg);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--panel-border);
+      border-radius: 16px;
+      padding: 14px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+
+    .search-input-wrap {
+      position: relative;
+      flex: 1;
+      min-width: 250px;
+    }
+
+    .search-input-wrap i {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+    }
+
+    .search-input {
+      width: 100%;
+      background: rgba(10, 15, 28, 0.7);
+      border: 1px solid var(--panel-border);
+      padding: 10px 42px 10px 14px;
+      border-radius: 10px;
+      color: #fff;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .search-input:focus {
+      border-color: var(--accent-blue);
+    }
+
+    .filter-group {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--panel-border);
+      color: var(--text-muted);
+      padding: 7px 14px;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .filter-btn.active, .filter-btn:hover {
+      background: rgba(59, 130, 246, 0.2);
+      border-color: var(--accent-blue);
+      color: #fff;
+    }
+
+    /* Students Table */
+    .table-container {
+      background: var(--panel-bg);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--panel-border);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 14px 35px rgba(0, 0, 0, 0.5);
+    }
+
+    .table-scroll {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: right;
+    }
+
+    thead th {
+      background: rgba(15, 23, 42, 0.9);
+      color: #93c5fd;
+      padding: 14px 18px;
+      font-size: 0.92rem;
+      font-weight: 800;
+      border-bottom: 2px solid rgba(59, 130, 246, 0.3);
+      white-space: nowrap;
+    }
+
+    tbody td {
+      padding: 14px 18px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      color: #e2e8f0;
+      font-size: 0.95rem;
+      vertical-align: middle;
+      white-space: nowrap;
+    }
+
+    tbody tr:hover {
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .student-badge-name {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .student-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(139, 92, 246, 0.2));
+      border: 1px solid rgba(59, 130, 246, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      color: #60a5fa;
+      font-size: 0.95rem;
+    }
+
+    /* Attendance Radio Buttons */
+    .status-dock {
+      display: inline-flex;
+      background: rgba(10, 16, 31, 0.8);
+      padding: 4px;
+      border-radius: 10px;
+      border: 1px solid var(--panel-border);
+      gap: 4px;
+    }
+
+    .status-opt {
+      padding: 5px 12px;
+      border-radius: 7px;
+      font-size: 0.84rem;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      transition: all 0.2s;
+    }
+
+    .status-opt.present.active { background: #059669; color: #fff; box-shadow: 0 0 10px rgba(16, 185, 129, 0.5); }
+    .status-opt.absent.active { background: #dc2626; color: #fff; box-shadow: 0 0 10px rgba(239, 68, 68, 0.5); }
+    .status-opt.late.active { background: #d97706; color: #fff; box-shadow: 0 0 10px rgba(245, 158, 11, 0.5); }
+
+    /* Star Rating */
+    .stars-bar {
+      display: flex;
+      gap: 4px;
+      align-items: center;
+      font-size: 1.15rem;
+      cursor: pointer;
+    }
+
+    .star-icon {
+      color: rgba(255, 255, 255, 0.15);
+      transition: color 0.15s, transform 0.15s;
+    }
+    .star-icon.filled {
+      color: var(--gold-star);
+      text-shadow: 0 0 10px rgba(251, 191, 36, 0.6);
+    }
+    .star-icon:hover {
+      transform: scale(1.2);
+    }
+
+    /* Checkbox toggle */
+    .custom-check {
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .badge-tag {
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.2s;
+    }
+    .badge-tag.done {
+      background: rgba(16, 185, 129, 0.2);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.4);
+    }
+    .badge-tag.not-done {
+      background: rgba(244, 63, 94, 0.2);
+      color: #fda4af;
+      border: 1px solid rgba(244, 63, 94, 0.4);
+    }
+
+    .action-icon-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 1rem;
+      padding: 6px;
+      border-radius: 6px;
+      transition: color 0.2s, background 0.2s;
+    }
+    .action-icon-btn:hover {
+      color: var(--accent-rose);
+      background: rgba(244, 63, 94, 0.1);
+    }
+
+    /* Modal Styling */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(8px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 20px;
+    }
+
+    .modal-card {
+      background: #0f172a;
+      border: 1px solid var(--panel-border);
+      border-radius: 20px;
+      padding: 26px;
+      width: 100%;
+      max-width: 500px;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8);
+      position: relative;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .modal-header h2 {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .modal-body {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .form-input {
+      width: 100%;
+      background: rgba(10, 16, 31, 0.8);
+      border: 1px solid var(--panel-border);
+      padding: 10px 14px;
+      border-radius: 10px;
+      color: #fff;
+      font-size: 0.95rem;
+      outline: none;
+    }
+    .form-input:focus { border-color: var(--accent-blue); }
+
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    /* Toast Notification */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 24px;
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid var(--accent-green);
+      color: #fff;
+      padding: 12px 20px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.92rem;
+      font-weight: 700;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      z-index: 2000;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.3s ease;
+    }
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="glow-blob blob-1"></div>
+  <div class="glow-blob blob-2"></div>
+  <div class="bg-grid"></div>
+
+  <div class="app-container">
+    
+    <!-- Header -->
+    <header>
+      <div class="brand-title">
+        <div class="brand-icon">
+          <i class="fa-solid fa-clipboard-user"></i>
+        </div>
+        <div>
+          <h1>كشف متابعة الطلاب الذكي</h1>
+          <p>نظام رصد الحضور، النجوم التحفيزية، والواجبات مع النسخ الاحتياطي الفوري</p>
+        </div>
+      </div>
+
+      <div class="top-actions">
+        <button class="btn btn-primary" onclick="openAddStudentModal()">
+          <i class="fa-solid fa-user-plus"></i> إضافة طالب
+        </button>
+        <button class="btn btn-success" onclick="exportToExcel()">
+          <i class="fa-solid fa-file-excel"></i> تصدير إكسيل
+        </button>
+        <button class="btn btn-warning" onclick="downloadBackupJSON()">
+          <i class="fa-solid fa-download"></i> نسخ احتياطي (حفظ)
+        </button>
+        <button class="btn" onclick="document.getElementById('restoreFileInput').click()">
+          <i class="fa-solid fa-upload"></i> استعادة نسخة
+        </button>
+        <input type="file" id="restoreFileInput" style="display:none" accept=".json" onchange="restoreBackupJSON(event)">
+        <button class="btn btn-danger" onclick="confirmResetDay()">
+          <i class="fa-solid fa-rotate-left"></i> تصفير اليوم
+        </button>
+      </div>
+    </header>
+
+    <!-- Stats Row -->
+    <section class="stats-row">
+      <div class="stat-card c-blue">
+        <div class="stat-icon"><i class="fa-solid fa-users"></i></div>
+        <div class="stat-info">
+          <h3>إجمالي الطلاب</h3>
+          <strong id="stat-total">0</strong>
+        </div>
+      </div>
+      <div class="stat-card c-green">
+        <div class="stat-icon"><i class="fa-solid fa-user-check"></i></div>
+        <div class="stat-info">
+          <h3>الحاضرون اليوم</h3>
+          <strong id="stat-present">0</strong>
+        </div>
+      </div>
+      <div class="stat-card c-amber">
+        <div class="stat-icon"><i class="fa-solid fa-star"></i></div>
+        <div class="stat-info">
+          <h3>مجموع النجوم</h3>
+          <strong id="stat-stars">0</strong>
+        </div>
+      </div>
+      <div class="stat-card c-purple">
+        <div class="stat-icon"><i class="fa-solid fa-book-bookmark"></i></div>
+        <div class="stat-info">
+          <h3>أكملوا الواجب</h3>
+          <strong id="stat-homework">0</strong>
+        </div>
+      </div>
+    </section>
+
+    <!-- Controls Bar -->
+    <section class="controls-bar">
+      <div class="search-input-wrap">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" id="searchInput" class="search-input" placeholder="ابحث باسم الطالب أو الفصل..." oninput="handleSearch(this.value)">
+      </div>
+
+      <div class="filter-group">
+        <button class="filter-btn active" onclick="setFilter('all', this)">الكل</button>
+        <button class="filter-btn" onclick="setFilter('present', this)">الحاضرون</button>
+        <button class="filter-btn" onclick="setFilter('absent', this)">الغائبون</button>
+        <button class="filter-btn" onclick="setFilter('stars', this)">الأعلى نجوماً ⭐</button>
+      </div>
+    </section>
+
+    <!-- Table -->
+    <div class="table-container">
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 50px;">#</th>
+              <th>اسم الطالب</th>
+              <th>الفصل</th>
+              <th>حالة الحضور</th>
+              <th>النجوم والتحفيز (1 - 5)</th>
+              <th>تسليم الواجب</th>
+              <th>مشاركة وتفاعل</th>
+              <th>ملاحظات</th>
+              <th style="width: 80px; text-align: center;">إجراءات</th>
+            </tr>
+          </thead>
+          <tbody id="studentsTableBody">
+            <!-- Dynamic Rows -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Add Student Modal -->
+  <div class="modal-overlay" id="addStudentModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2><i class="fa-solid fa-user-plus" style="color: var(--accent-blue); margin-left: 8px;"></i>إضافة طالب جديد</h2>
+        <button class="action-icon-btn" onclick="closeAddStudentModal()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>اسم الطالب الكامل:</label>
+          <input type="text" id="newStudentName" class="form-input" placeholder="مثال: محمد بن خالد العتيبي">
+        </div>
+        <div class="form-group">
+          <label>الفصل / الشعبة:</label>
+          <input type="text" id="newStudentClass" class="form-input" placeholder="مثال: أول ثانوي / 6" value="أول ثانوي / 6">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" onclick="closeAddStudentModal()">إلغاء</button>
+        <button class="btn btn-primary" onclick="saveNewStudent()">حفظ الطالب</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toastMessage">
+    <i class="fa-solid fa-circle-check" style="color: #34d399;"></i>
+    <span id="toastText">تمت العملية بنجاح!</span>
+  </div>
+
+  <script>
+    // Initial Seed Data
+    const defaultStudents = [
+      { id: 1, name: "عصام عبد المنان", classGrade: "أول ثانوي / 6", status: "present", stars: 5, homework: true, participation: true, notes: "متميز جداً ومتفاعل" },
+      { id: 2, name: "فيصل عبدالله الزهراني", classGrade: "أول ثانوي / 6", status: "present", stars: 4, homework: true, participation: true, notes: "" },
+      { id: 3, name: "أحمد بن محمد السالم", classGrade: "أول ثانوي / 6", status: "late", stars: 3, homework: true, participation: false, notes: "تأخر 5 دقائق" },
+      { id: 4, name: "سعود بن فهد الدوسري", classGrade: "أول ثانوي / 6", status: "present", stars: 4, homework: true, participation: true, notes: "" },
+      { id: 5, name: "ريان بن خالد الشمري", classGrade: "أول ثانوي / 6", status: "absent", stars: 0, homework: false, participation: false, notes: "غياب بعذر" },
+      { id: 6, name: "عبدالرحمن بن علي الشهري", classGrade: "أول ثانوي / 6", status: "present", stars: 5, homework: true, participation: true, notes: "إجابة نموذجية" }
+    ];
+
+    let students = [];
+    let currentFilter = 'all';
+    let searchQuery = '';
+
+    // Load from LocalStorage or Default
+    function initApp() {
+      const savedData = localStorage.getItem('smart_attendance_data');
+      if (savedData) {
+        try {
+          students = JSON.parse(savedData);
+        } catch (e) {
+          students = [...defaultStudents];
+        }
+      } else {
+        students = [...defaultStudents];
+        saveToLocalStorage();
+      }
+      renderTable();
+      updateStats();
+    }
+
+    function saveToLocalStorage() {
+      localStorage.setItem('smart_attendance_data', JSON.stringify(students));
+      updateStats();
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toastMessage');
+      document.getElementById('toastText').innerText = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 3000);
+    }
+
+    // Render Table
+    function renderTable() {
+      const tbody = document.getElementById('studentsTableBody');
+      tbody.innerHTML = '';
+
+      let filtered = students.filter(s => {
+        const matchesSearch = s.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                              s.classGrade.toLowerCase().includes(searchQuery.toLowerCase());
+        if (!matchesSearch) return false;
+
+        if (currentFilter === 'present') return s.status === 'present';
+        if (currentFilter === 'absent') return s.status === 'absent';
+        if (currentFilter === 'stars') return s.stars >= 4;
+        return true;
+      });
+
+      if (currentFilter === 'stars') {
+        filtered.sort((a, b) => b.stars - a.stars);
+      }
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="9" style="text-align: center; padding: 40px; color: var(--text-muted);">
+              <i class="fa-solid fa-user-slash" style="font-size: 2rem; margin-bottom: 10px; display: block;"></i>
+              لا توجد بيانات مطابقة للبحث أو الفلتر المختار
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      filtered.forEach((st, idx) => {
+        const tr = document.createElement('tr');
+        
+        // Stars HTML
+        let starsHtml = '';
+        for (let i = 1; i <= 5; i++) {
+          const filled = i <= st.stars ? 'filled fa-solid' : 'fa-regular';
+          starsHtml += `<i class="${filled} fa-star star-icon" onclick="setStudentStars(${st.id}, ${i})"></i>`;
+        }
+
+        tr.innerHTML = `
+          <td><strong>${idx + 1}</strong></td>
+          <td>
+            <div class="student-badge-name">
+              <div class="student-avatar">${st.name.trim().charAt(0)}</div>
+              <div>
+                <strong>${st.name}</strong>
+              </div>
+            </div>
+          </td>
+          <td><span style="color: var(--text-muted); font-size: 0.9rem;">${st.classGrade}</span></td>
+          <td>
+            <div class="status-dock">
+              <button class="status-opt present ${st.status === 'present' ? 'active' : ''}" onclick="setAttendance(${st.id}, 'present')">حاضر</button>
+              <button class="status-opt late ${st.status === 'late' ? 'active' : ''}" onclick="setAttendance(${st.id}, 'late')">متأخر</button>
+              <button class="status-opt absent ${st.status === 'absent' ? 'active' : ''}" onclick="setAttendance(${st.id}, 'absent')">غائب</button>
+            </div>
+          </td>
+          <td>
+            <div class="stars-bar">${starsHtml} <span style="font-size: 0.85rem; font-weight: 800; color: #fbbf24; margin-right: 6px;">(${st.stars})</span></div>
+          </td>
+          <td>
+            <span class="badge-tag ${st.homework ? 'done' : 'not-done'}" onclick="toggleHomework(${st.id})">
+              <i class="fa-solid ${st.homework ? 'fa-check' : 'fa-xmark'}"></i> ${st.homework ? 'تم التسليم' : 'لم يسلّم'}
+            </span>
+          </td>
+          <td>
+            <span class="badge-tag ${st.participation ? 'done' : 'not-done'}" onclick="toggleParticipation(${st.id})">
+              <i class="fa-solid ${st.participation ? 'fa-hand' : 'fa-minus'}"></i> ${st.participation ? 'متفاعل' : 'غير متفاعل'}
+            </span>
+          </td>
+          <td>
+            <input type="text" class="form-input" style="padding: 6px 10px; font-size: 0.85rem; min-width: 140px;" 
+                   value="${st.notes || ''}" placeholder="ملاحظة..." onchange="updateNotes(${st.id}, this.value)">
+          </td>
+          <td style="text-align: center;">
+            <button class="action-icon-btn" title="حذف الطالب" onclick="deleteStudent(${st.id})">
+              <i class="fa-solid fa-trash-can"></i>
+            </button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    // Interactive Actions
+    function setAttendance(id, status) {
+      const st = students.find(s => s.id === id);
+      if (st) {
+        st.status = status;
+        saveToLocalStorage();
+        renderTable();
+      }
+    }
+
+    function setStudentStars(id, count) {
+      const st = students.find(s => s.id === id);
+      if (st) {
+        st.stars = (st.stars === count) ? count - 1 : count; // toggle off if clicked same
+        if (st.stars === 5) {
+          confetti({ particleCount: 60, spread: 60, origin: { y: 0.7 } });
+        }
+        saveToLocalStorage();
+        renderTable();
+      }
+    }
+
+    function toggleHomework(id) {
+      const st = students.find(s => s.id === id);
+      if (st) {
+        st.homework = !st.homework;
+        saveToLocalStorage();
+        renderTable();
+      }
+    }
+
+    function toggleParticipation(id) {
+      const st = students.find(s => s.id === id);
+      if (st) {
+        st.participation = !st.participation;
+        saveToLocalStorage();
+        renderTable();
+      }
+    }
+
+    function updateNotes(id, text) {
+      const st = students.find(s => s.id === id);
+      if (st) {
+        st.notes = text;
+        saveToLocalStorage();
+      }
+    }
+
+    function deleteStudent(id) {
+      if (confirm("هل أنت متأكد من حذف هذا الطالب من الكشف؟")) {
+        students = students.filter(s => s.id !== id);
+        saveToLocalStorage();
+        renderTable();
+        showToast("تم حذف الطالب من القائمة");
+      }
+    }
+
+    // Modal Add Student
+    function openAddStudentModal() {
+      document.getElementById('addStudentModal').style.display = 'flex';
+      document.getElementById('newStudentName').focus();
+    }
+
+    function closeAddStudentModal() {
+      document.getElementById('addStudentModal').style.display = 'none';
+      document.getElementById('newStudentName').value = '';
+    }
+
+    function saveNewStudent() {
+      const name = document.getElementById('newStudentName').value.trim();
+      const cls = document.getElementById('newStudentClass').value.trim() || "عام";
+      if (!name) {
+        alert("يرجى إدخال اسم الطالب!");
+        return;
+      }
+
+      const newId = students.length > 0 ? Math.max(...students.map(s => s.id)) + 1 : 1;
+      students.push({
+        id: newId,
+        name: name,
+        classGrade: cls,
+        status: "present",
+        stars: 3,
+        homework: true,
+        participation: true,
+        notes: ""
+      });
+
+      saveToLocalStorage();
+      renderTable();
+      closeAddStudentModal();
+      showToast(`تمت إضافة الطالب: ${name}`);
+    }
+
+    // Search and Filters
+    function handleSearch(val) {
+      searchQuery = val;
+      renderTable();
+    }
+
+    function setFilter(type, btn) {
+      currentFilter = type;
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderTable();
+    }
+
+    function updateStats() {
+      document.getElementById('stat-total').innerText = students.length;
+      document.getElementById('stat-present').innerText = students.filter(s => s.status === 'present').length;
+      document.getElementById('stat-stars').innerText = students.reduce((acc, s) => acc + s.stars, 0);
+      document.getElementById('stat-homework').innerText = students.filter(s => s.homework).length;
+    }
+
+    // Backup & Restore
+    function downloadBackupJSON() {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(students, null, 2));
+      const downloadAnchor = document.createElement('a');
+      const dateStr = new Date().toISOString().slice(0, 10);
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", `كشف_الطلاب_نسخة_احتياطية_${dateStr}.json`);
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+      showToast("تم تنزيل ملف النسخة الاحتياطية بنجاح!");
+    }
+
+    function restoreBackupJSON(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const imported = JSON.parse(e.target.result);
+          if (Array.isArray(imported)) {
+            students = imported;
+            saveToLocalStorage();
+            renderTable();
+            showToast("تم استرجاع بيانات الطلاب بنجاح!");
+          } else {
+            alert("الملف غير صالح أو لا يحتوي على بنية بيانات صحيحة.");
+          }
+        } catch (err) {
+          alert("حدث خطأ أثناء قراءة ملف النسخة الاحتياطية.");
+        }
+      };
+      reader.readAsText(file);
+      event.target.value = '';
+    }
+
+    // Export Excel
+    function exportToExcel() {
+      const exportData = students.map((s, idx) => ({
+        "م": idx + 1,
+        "اسم الطالب": s.name,
+        "الفصل": s.classGrade,
+        "حالة الحضور": s.status === 'present' ? 'حاضر' : s.status === 'late' ? 'متأخر' : 'غائب',
+        "النجوم التحفيزية": s.stars,
+        "الواجب": s.homework ? 'مُسلّم' : 'غير مسلّم',
+        "المشاركة والتفاعل": s.participation ? 'متفاعل' : 'غير متفاعل',
+        "ملاحظات": s.notes || '-'
+      }));
+
+      const ws = XLSX.utils.json_to_sheet(exportData);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "كشف الطلاب");
+      const dateStr = new Date().toISOString().slice(0, 10);
+      XLSX.writeFile(wb, `كشف_الطلاب_${dateStr}.xlsx`);
+      showToast("تم تصدير ملف الإكسيل بنجاح!");
+    }
+
+    function confirmResetDay() {
+      if (confirm("هل تريد تصفير حضور اليوم والواجبات للبدء بيوم جديد مع الإبقاء على أسماء الطلاب؟")) {
+        students.forEach(s => {
+          s.status = 'present';
+          s.homework = false;
+          s.participation = false;
+          s.notes = '';
+        });
+        saveToLocalStorage();
+        renderTable();
+        showToast("تم تصفير رصد اليوم بنجاح!");
+      }
+    }
+
+    window.onload = initApp;
+  </script>
+</body>
+</html>
