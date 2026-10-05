@@ -248,6 +248,15 @@
       box-shadow: 0 4px 16px rgba(37, 99, 235, 0.35);
     }
 
+    .btn-zero-stars {
+      background: rgba(245, 158, 11, 0.12);
+      border-color: rgba(245, 158, 11, 0.35);
+      color: #fbbf24;
+    }
+    .btn-zero-stars:hover {
+      background: rgba(245, 158, 11, 0.25);
+    }
+
     .kpis-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -469,13 +478,13 @@
     .star-rack {
       display: inline-flex;
       align-items: center;
-      gap: 3px;
+      gap: 4px;
       font-size: 1.25rem;
       cursor: pointer;
       user-select: none;
     }
     .star-item {
-      color: rgba(255, 255, 255, 0.15);
+      color: rgba(255, 255, 255, 0.12);
       transition: transform 0.15s, color 0.15s;
     }
     .star-item.lit {
@@ -731,6 +740,9 @@
 
       <!-- أزرار الإجراءات -->
       <div class="header-btns">
+        <button class="action-btn btn-zero-stars" onclick="resetAllStarsToZero()" title="تصفير نجوم جميع الطلاب حالياً">
+          <i class="fa-regular fa-star"></i> تصفير كل النجوم
+        </button>
         <button class="action-btn btn-save-record" onclick="showSaveDayModal()">
           <i class="fa-solid fa-floppy-disk"></i>
           <span>حفظ اليوم وأرشفته</span>
@@ -848,7 +860,7 @@
 
   </div>
 
-  <!-- مودال إضافة سبب النجوم الجديد -->
+  <!-- مودال سبب النجوم -->
   <div class="modal-overlay" id="modalStarReason">
     <div class="modal-sheet">
       <div class="modal-header-line">
@@ -864,10 +876,10 @@
         
         <div class="quick-reasons-rack">
           <button type="button" class="reason-btn" onclick="setQuickReason('✨ إجابة نموذجية ومميزة')">✨ إجابة نموذجية</button>
-          <button type="button" class="reason-btn" onclick="setQuickReason('🤝 تعاون مميز ومساعدة زملائه')">🤝 تعاون ومساعدة</button>
-          <button type="button" class="reason-btn" onclick="setQuickReason('📚 حل الواجب بإتقان فائق')">📚 حل الواجب بإتقان</button>
+          <button type="button" class="reason-btn" onclick="setQuickReason('🤝 تعاون ومساعدة الزملاء')">🤝 تعاون ومساعدة</button>
+          <button type="button" class="reason-btn" onclick="setQuickReason('📚 حل الواجب بإتقان فائق')">📚 إتقان الواجب</button>
           <button type="button" class="reason-btn" onclick="setQuickReason('🎯 تركيز وانضباط استثنائي')">🎯 تركيز وانضباط</button>
-          <button type="button" class="reason-btn" onclick="setQuickReason('💡 طرح فكرة إبداعية ومبتكرة')">💡 فكرة إبداعية</button>
+          <button type="button" class="reason-btn" onclick="setQuickReason('💡 فكرة إبداعية ومبتكرة')">💡 فكرة إبداعية</button>
         </div>
 
         <input type="text" id="inpStarReason" class="input-ctrl" placeholder="اكتب سبب التميز أو اضغط تأكيد مباشرة...">
@@ -909,7 +921,7 @@
       </div>
       <div>
         <p style="color: var(--text-sub); margin-bottom: 14px; font-size: 0.9rem;">
-          سيتم حفظ نسخة كاملة من كشف اليوم الحالي بجميع تفاصيله (الحضور، النجوم، الملاحظات) في قسم الأرشيف.
+          سيتم حفظ نسخة كاملة من كشف اليوم الحالي بجميع تفاصيله في الأرشيف.
         </p>
 
         <label class="input-lbl">عنوان أو تاريخ السجل:</label>
@@ -917,7 +929,7 @@
         
         <label style="display: flex; align-items: center; gap: 8px; color: #fff; font-weight: 700; cursor: pointer;">
           <input type="checkbox" id="chkResetAfterSave" checked style="width: 18px; height: 18px; accent-color: var(--emerald-glow);">
-          <span>تصفير حالات الحضور والملاحظات للبدء بيوم جديد فوراً بعد الحفظ</span>
+          <span>تصفير حالات الحضور والنجوم (0 نجوم) والملاحظات لبدء يوم جديد</span>
         </label>
       </div>
       <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 20px;">
@@ -977,14 +989,15 @@
       "🤝 سلوك راقٍ ومبادرة ممتازة"
     ];
 
+    // جميع الطلاب يبدأون بـ 0 نجوم دائماً
     const seedData = [
-      { id: 1, name: "عصام عبد المنان", classGrade: "أول ثانوي / 6", status: "present", stars: 5, homework: true, participation: true, note: "✨ مشارك ومتميز جداً" },
-      { id: 2, name: "فيصل عبدالله الزهراني", classGrade: "أول ثانوي / 6", status: "present", stars: 4, homework: true, participation: true, note: "" },
-      { id: 3, name: "أحمد بن محمد السالم", classGrade: "أول ثانوي / 6", status: "late", stars: 3, homework: true, participation: false, note: "⏱️ تأخر عن بداية الحصة" },
-      { id: 4, name: "سعود بن فهد الدوسري", classGrade: "أول ثانوي / 6", status: "present", stars: 4, homework: true, participation: true, note: "" },
-      { id: 5, name: "ريان بن خالد الشمري", classGrade: "أول ثانوي / 6", status: "absent", stars: 0, homework: false, participation: false, note: "غياب بعذر مسبق" },
-      { id: 6, name: "عبدالرحمن بن علي الشهري", classGrade: "أول ثانوي / 6", status: "present", stars: 5, homework: true, participation: true, note: "🤝 سلوك راقٍ ومبادرة ممتازة" },
-      { id: 7, name: "بندر بن ناصر القحطاني", classGrade: "أول ثانوي / 6", status: "present", stars: 3, homework: false, participation: false, note: "😴 النوم في الفصل" }
+      { id: 1, name: "عصام عبد المنان", classGrade: "أول ثانوي / 6", status: "present", stars: 0, homework: false, participation: false, note: "" },
+      { id: 2, name: "فيصل عبدالله الزهراني", classGrade: "أول ثانوي / 6", status: "present", stars: 0, homework: false, participation: false, note: "" },
+      { id: 3, name: "أحمد بن محمد السالم", classGrade: "أول ثانوي / 6", status: "present", stars: 0, homework: false, participation: false, note: "" },
+      { id: 4, name: "سعود بن فهد الدوسري", classGrade: "أول ثانوي / 6", status: "present", stars: 0, homework: false, participation: false, note: "" },
+      { id: 5, name: "ريان بن خالد الشمري", classGrade: "أول ثانوي / 6", status: "present", stars: 0, homework: false, participation: false, note: "" },
+      { id: 6, name: "عبدالرحمن بن علي الشهري", classGrade: "أول ثانوي / 6", status: "present", stars: 0, homework: false, participation: false, note: "" },
+      { id: 7, name: "بندر بن ناصر القحطاني", classGrade: "أول ثانوي / 6", status: "present", stars: 0, homework: false, participation: false, note: "" }
     ];
 
     let students = [];
@@ -992,18 +1005,25 @@
     let activeFilter = 'all';
     let searchQuery = '';
 
-    // حالة مؤقتة للمودال الخاص بالنجوم
     let pendingStarAward = {
       studentId: null,
       starsCount: 0
     };
 
     function initPlatform() {
-      const storedLive = localStorage.getItem('ultra_students_live');
+      // تنظيف أي بيانات قديمة مخزنة كان فيها نجوم افتراضية (3 نجوم)
+      localStorage.removeItem('ultra_students_live');
+      localStorage.removeItem('ultra_students_live_v2');
+
+      const storedLive = localStorage.getItem('ultra_students_live_zero_v1');
       if (storedLive) {
-        try { students = JSON.parse(storedLive); } catch(e) { students = [...seedData]; }
+        try { 
+          students = JSON.parse(storedLive); 
+        } catch(e) { 
+          students = JSON.parse(JSON.stringify(seedData)); 
+        }
       } else {
-        students = [...seedData];
+        students = JSON.parse(JSON.stringify(seedData));
         saveLiveState();
       }
 
@@ -1019,7 +1039,7 @@
     }
 
     function saveLiveState() {
-      localStorage.setItem('ultra_students_live', JSON.stringify(students));
+      localStorage.setItem('ultra_students_live_zero_v1', JSON.stringify(students));
       refreshKPIs();
     }
 
@@ -1027,6 +1047,15 @@
       localStorage.setItem('ultra_students_archive', JSON.stringify(archive));
       renderArchive();
       updateArchiveBadge();
+    }
+
+    function resetAllStarsToZero() {
+      if (confirm("هل تريد تصفير نجوم جميع الطلاب حالياً وجعلها 0 نجوم؟")) {
+        students.forEach(s => s.stars = 0);
+        saveLiveState();
+        renderTable();
+        showToast("تم تصفير نجوم جميع الطلاب إلى 0 ⭐");
+      }
     }
 
     function showToast(text) {
@@ -1064,7 +1093,7 @@
 
         if (activeFilter === 'present') return s.status === 'present';
         if (activeFilter === 'absent') return s.status === 'absent';
-        if (activeFilter === 'stars') return s.stars >= 4;
+        if (activeFilter === 'stars') return s.stars >= 1;
         if (activeFilter === 'alerts') return s.note && (s.note.includes('النوم') || s.note.includes('التكلم') || s.note.includes('الجوال') || s.note.includes('تأخر'));
         return true;
       });
@@ -1088,7 +1117,7 @@
       list.forEach((s, idx) => {
         const tr = document.createElement('tr');
 
-        // النجوم
+        // رسم النجوم (تبدأ مظلمة طالما عددها 0)
         let starsHtml = '';
         for (let i = 1; i <= 5; i++) {
           const lit = i <= s.stars ? 'lit' : '';
@@ -1114,7 +1143,10 @@
             </div>
           </td>
           <td>
-            <div class="star-rack">${starsHtml} <span style="font-size: 0.84rem; font-weight: 900; color: #fbbf24; margin-right: 6px;">(${s.stars})</span></div>
+            <div class="star-rack">
+              ${starsHtml} 
+              <span style="font-size: 0.84rem; font-weight: 900; color: #fbbf24; margin-right: 6px;">(${s.stars})</span>
+            </div>
           </td>
           <td>
             <span class="status-toggle ${s.homework ? 'is-done' : 'is-fail'}" onclick="toggleHW(${s.id})">
@@ -1146,18 +1178,26 @@
       });
     }
 
-    // فتح نافذة السؤال عن سبب النجوم
     function openStarModal(studentId, starsCount) {
       const student = students.find(x => x.id === studentId);
       if (!student) return;
 
-      // إذا ضغط نفس عدد النجوم الحالي لتقليلها بنجمة
-      const targetStars = (student.stars === starsCount) ? starsCount - 1 : starsCount;
+      // إذا ضغط نفس عدد النجوم الحالي، يتم إنقاصها (أو تصفيرها)
+      const targetStars = (student.stars === starsCount) ? (starsCount - 1) : starsCount;
 
       pendingStarAward = {
         studentId: studentId,
         starsCount: targetStars
       };
+
+      // إذا كانت النتيجة تصفير للنجوم، تصفّر مباشرة دون فتح النافذة
+      if (targetStars === 0) {
+        student.stars = 0;
+        saveLiveState();
+        renderTable();
+        showToast(`تم تصفير نجوم الطالب ${student.name}`);
+        return;
+      }
 
       document.getElementById('lblStarStudentName').innerText = student.name;
       document.getElementById('lblStarCount').innerText = targetStars;
@@ -1171,7 +1211,6 @@
       document.getElementById('inpStarReason').value = text;
     }
 
-    // تأكيد النجوم وتطبيقها مع السبب
     function commitStarAward() {
       const { studentId, starsCount } = pendingStarAward;
       const student = students.find(x => x.id === studentId);
@@ -1180,7 +1219,6 @@
       if (student) {
         student.stars = starsCount;
 
-        // إذا كتب المعلم سبب، يتم ربطه بملاحظة الطالب
         if (reason) {
           student.note = student.note ? `${student.note} | ${reason}` : reason;
         }
@@ -1188,12 +1226,11 @@
         saveLiveState();
         renderTable();
 
-        // تأثير الاحتفال
         if (starsCount >= 4) {
           confetti({ particleCount: 100, spread: 80, origin: { y: 0.6 } });
         }
 
-        showToast(`تم رصد ${starsCount} نجوم لـ ${student.name} بنجاح! ⭐`);
+        showToast(`تم منح ${starsCount} نجوم لـ ${student.name} بنجاح! ⭐`);
       }
 
       hideModal('modalStarReason');
@@ -1269,21 +1306,22 @@
       if (!name) { alert("يرجى كتابة اسم الطالب أولاً"); return; }
 
       const nextId = students.length > 0 ? Math.max(...students.map(s => s.id)) + 1 : 1;
+      
       students.push({
         id: nextId,
         name: name,
         classGrade: cls,
         status: "present",
-        stars: 3,
-        homework: true,
-        participation: true,
+        stars: 0,
+        homework: false,
+        participation: false,
         note: ""
       });
 
       saveLiveState();
       renderTable();
       hideModal('modalAddStudent');
-      showToast(`تمت إضافة الطالب: ${name}`);
+      showToast(`تمت إضافة الطالب: ${name} (0 نجوم)`);
     }
 
     function showSaveDayModal() {
@@ -1316,7 +1354,7 @@
           s.homework = false;
           s.participation = false;
           s.note = '';
-          s.stars = 3;
+          s.stars = 0;
         });
         saveLiveState();
         renderTable();
@@ -1324,7 +1362,7 @@
 
       hideModal('modalSaveDay');
       confetti({ particleCount: 120, spread: 100, origin: { y: 0.5 } });
-      showToast("تم حفظ وأرشفة كشف اليوم بنجاح في السجل!");
+      showToast("تم حفظ وأرشفة كشف اليوم بنجاح وتصفير النجوم!");
     }
 
     function updateArchiveBadge() {
