@@ -61,7 +61,6 @@
       position: relative;
     }
 
-    /* خلفية فنية حية (Ambient Mesh Glow) */
     .mesh-glow {
       position: fixed;
       border-radius: 50%;
@@ -91,7 +90,6 @@
       z-index: 1;
     }
 
-    /* الحاوية الرئيسية بتنسيق عريض وانسيابي */
     .master-container {
       position: relative;
       z-index: 2;
@@ -103,7 +101,6 @@
       gap: 18px;
     }
 
-    /* كروت زجاجية فائقة التباين والجمال */
     .glass-box {
       background: var(--bg-card);
       backdrop-filter: blur(24px);
@@ -117,7 +114,6 @@
       border-color: rgba(255, 255, 255, 0.12);
     }
 
-    /* الترويسة الرئيسية الاحترافية */
     header.header-panel {
       padding: 16px 26px;
       display: flex;
@@ -167,7 +163,6 @@
       font-weight: 600;
     }
 
-    /* التبويب الرأسي الذكي (الكشف vs الأرشيف) */
     .tab-switcher {
       display: inline-flex;
       background: rgba(8, 12, 24, 0.85);
@@ -211,7 +206,6 @@
       font-weight: 800;
     }
 
-    /* أزرار الإجراءات العلوية */
     .header-btns {
       display: flex;
       align-items: center;
@@ -246,9 +240,6 @@
       color: #fff;
       box-shadow: 0 4px 16px rgba(16, 185, 129, 0.35);
     }
-    .btn-save-record:hover {
-      box-shadow: 0 6px 22px rgba(16, 185, 129, 0.55);
-    }
 
     .btn-add-student {
       background: linear-gradient(135deg, #2563eb, #4f46e5);
@@ -256,11 +247,7 @@
       color: #fff;
       box-shadow: 0 4px 16px rgba(37, 99, 235, 0.35);
     }
-    .btn-add-student:hover {
-      box-shadow: 0 6px 22px rgba(37, 99, 235, 0.55);
-    }
 
-    /* كروت المؤشرات (KPIs) الفخمة */
     .kpis-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -324,7 +311,6 @@
     .theme-stars .kpi-icon-circ { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); }
     .theme-hw .kpi-icon-circ { background: rgba(6, 182, 212, 0.15); color: #38bdf8; border: 1px solid rgba(6, 182, 212, 0.3); }
 
-    /* شريط البحث والفلترة */
     .filter-panel {
       padding: 12px 20px;
       display: flex;
@@ -384,7 +370,6 @@
       color: #fff;
     }
 
-    /* جدول الطلاب المحترف */
     .table-viewport {
       border-radius: var(--radius-xl);
       overflow: hidden;
@@ -485,20 +470,20 @@
       display: inline-flex;
       align-items: center;
       gap: 3px;
-      font-size: 1.2rem;
+      font-size: 1.25rem;
       cursor: pointer;
       user-select: none;
     }
     .star-item {
-      color: rgba(255, 255, 255, 0.12);
+      color: rgba(255, 255, 255, 0.15);
       transition: transform 0.15s, color 0.15s;
     }
     .star-item.lit {
       color: var(--gold-star);
-      text-shadow: 0 0 10px rgba(251, 191, 36, 0.7);
+      text-shadow: 0 0 12px rgba(251, 191, 36, 0.75);
     }
     .star-item:hover {
-      transform: scale(1.25);
+      transform: scale(1.3);
     }
 
     .status-toggle {
@@ -556,12 +541,12 @@
       border-radius: 8px;
       font-size: 0.84rem;
       outline: none;
-      width: 140px;
+      width: 150px;
       transition: all 0.2s;
     }
     .notes-text-box:focus {
       border-color: var(--indigo-glow);
-      width: 180px;
+      width: 190px;
     }
 
     .trash-btn {
@@ -578,7 +563,6 @@
       background: rgba(244, 63, 94, 0.12);
     }
 
-    /* تبويب الأرشيف */
     .archive-pane {
       display: none;
       animation: fadeIn 0.3s ease;
@@ -609,13 +593,7 @@
       gap: 14px;
       transition: all 0.25s ease;
     }
-    .history-card-box:hover {
-      border-color: rgba(99, 102, 241, 0.4);
-      transform: translateY(-3px);
-      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
-    }
 
-    /* نافذة المودال */
     .modal-overlay {
       position: fixed;
       inset: 0;
@@ -666,6 +644,30 @@
       margin-bottom: 14px;
     }
     .input-ctrl:focus { border-color: var(--indigo-glow); }
+
+    .quick-reasons-rack {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 14px;
+    }
+
+    .reason-btn {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-sub);
+      padding: 5px 11px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .reason-btn:hover {
+      background: rgba(245, 158, 11, 0.15);
+      border-color: var(--gold-star);
+      color: #fbbf24;
+    }
 
     .glow-toast {
       position: fixed;
@@ -833,7 +835,7 @@
               <i class="fa-solid fa-box-archive" style="color: var(--indigo-glow); margin-left: 8px;"></i>
               الأرشيف وسجل الأيام المحفوظة
             </h2>
-            <p style="color: var(--text-sub); font-size: 0.88rem;">يمكنك في أي وقت مراجعة كشف أي يوم دراسي سابق، استعادته، أو تنزيله كملف Excel مستقل</p>
+            <p style="color: var(--text-sub); font-size: 0.88rem;">يمكنك مراجعة كشف أي يوم دراسي سابق، استعادته، أو تنزيله كملف Excel مستقل</p>
           </div>
           <button class="action-btn" onclick="clearArchiveHistory()" style="color: #fda4af;">
             <i class="fa-solid fa-trash-can"></i> إفراغ الأرشيف
@@ -844,6 +846,37 @@
       </div>
     </div>
 
+  </div>
+
+  <!-- مودال إضافة سبب النجوم الجديد -->
+  <div class="modal-overlay" id="modalStarReason">
+    <div class="modal-sheet">
+      <div class="modal-header-line">
+        <h2><i class="fa-solid fa-star" style="color: var(--gold-star); margin-left: 8px;"></i>منح نجوم تحفيزية</h2>
+        <button class="action-btn" style="padding: 4px 10px;" onclick="hideModal('modalStarReason')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div>
+        <p style="color: var(--text-sub); margin-bottom: 12px; font-size: 0.92rem;">
+          منح الطالب <strong id="lblStarStudentName" style="color: #38bdf8;"></strong> عدد <strong id="lblStarCount" style="color: var(--gold-star);"></strong> نجوم.
+        </p>
+
+        <label class="input-lbl">اختر سبب الإشادة والتحفيز أو اكتب سبباً مخصصاً:</label>
+        
+        <div class="quick-reasons-rack">
+          <button type="button" class="reason-btn" onclick="setQuickReason('✨ إجابة نموذجية ومميزة')">✨ إجابة نموذجية</button>
+          <button type="button" class="reason-btn" onclick="setQuickReason('🤝 تعاون مميز ومساعدة زملائه')">🤝 تعاون ومساعدة</button>
+          <button type="button" class="reason-btn" onclick="setQuickReason('📚 حل الواجب بإتقان فائق')">📚 حل الواجب بإتقان</button>
+          <button type="button" class="reason-btn" onclick="setQuickReason('🎯 تركيز وانضباط استثنائي')">🎯 تركيز وانضباط</button>
+          <button type="button" class="reason-btn" onclick="setQuickReason('💡 طرح فكرة إبداعية ومبتكرة')">💡 فكرة إبداعية</button>
+        </div>
+
+        <input type="text" id="inpStarReason" class="input-ctrl" placeholder="اكتب سبب التميز أو اضغط تأكيد مباشرة...">
+      </div>
+      <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 10px;">
+        <button class="action-btn" onclick="hideModal('modalStarReason')">إلغاء</button>
+        <button class="action-btn" style="background: linear-gradient(135deg, #d97706, #f59e0b); border-color: #fbbf24; color: #fff;" onclick="commitStarAward()">تأكيد ومنح النجوم ⭐</button>
+      </div>
+    </div>
   </div>
 
   <!-- مودال إضافة طالب جديد -->
@@ -933,7 +966,6 @@
   </div>
 
   <script>
-    // قائمة الملاحظات السريعة الجاهزة
     const PRESETS = [
       "اختر ملاحظة جاهزة...",
       "😴 النوم في الفصل",
@@ -945,7 +977,6 @@
       "🤝 سلوك راقٍ ومبادرة ممتازة"
     ];
 
-    // البيانات الافتراضية الأولية
     const seedData = [
       { id: 1, name: "عصام عبد المنان", classGrade: "أول ثانوي / 6", status: "present", stars: 5, homework: true, participation: true, note: "✨ مشارك ومتميز جداً" },
       { id: 2, name: "فيصل عبدالله الزهراني", classGrade: "أول ثانوي / 6", status: "present", stars: 4, homework: true, participation: true, note: "" },
@@ -960,6 +991,12 @@
     let archive = [];
     let activeFilter = 'all';
     let searchQuery = '';
+
+    // حالة مؤقتة للمودال الخاص بالنجوم
+    let pendingStarAward = {
+      studentId: null,
+      starsCount: 0
+    };
 
     function initPlatform() {
       const storedLive = localStorage.getItem('ultra_students_live');
@@ -999,7 +1036,6 @@
       setTimeout(() => t.classList.remove('visible'), 3000);
     }
 
-    // التنقل بين التبويبات
     function switchView(mode) {
       document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
       const pLive = document.getElementById('pane-live');
@@ -1017,7 +1053,6 @@
       }
     }
 
-    // رسم جدول الطلاب
     function renderTable() {
       const tbody = document.getElementById('studentSheetBody');
       tbody.innerHTML = '';
@@ -1057,10 +1092,9 @@
         let starsHtml = '';
         for (let i = 1; i <= 5; i++) {
           const lit = i <= s.stars ? 'lit' : '';
-          starsHtml += `<i class="fa-solid fa-star star-item ${lit}" onclick="setStars(${s.id}, ${i})"></i>`;
+          starsHtml += `<i class="fa-solid fa-star star-item ${lit}" title="${i} نجوم" onclick="openStarModal(${s.id}, ${i})"></i>`;
         }
 
-        // الخيارات المنسدلة
         let selectOptions = PRESETS.map(p => `<option value="${p === PRESETS[0] ? '' : p}">${p}</option>`).join('');
 
         tr.innerHTML = `
@@ -1085,7 +1119,7 @@
           <td>
             <span class="status-toggle ${s.homework ? 'is-done' : 'is-fail'}" onclick="toggleHW(${s.id})">
               <i class="fa-solid ${s.homework ? 'fa-circle-check' : 'fa-circle-xmark'}"></i>
-              ${s.homework ? 'مُسلَّم' : 'لم يسلّم'}
+              ${s.homework ? 'مُسلَّم' : 'لم يسلّم'}
             </span>
           </td>
           <td>
@@ -1112,20 +1146,62 @@
       });
     }
 
-    // تحديث الحقول التفاعلية
+    // فتح نافذة السؤال عن سبب النجوم
+    function openStarModal(studentId, starsCount) {
+      const student = students.find(x => x.id === studentId);
+      if (!student) return;
+
+      // إذا ضغط نفس عدد النجوم الحالي لتقليلها بنجمة
+      const targetStars = (student.stars === starsCount) ? starsCount - 1 : starsCount;
+
+      pendingStarAward = {
+        studentId: studentId,
+        starsCount: targetStars
+      };
+
+      document.getElementById('lblStarStudentName').innerText = student.name;
+      document.getElementById('lblStarCount').innerText = targetStars;
+      document.getElementById('inpStarReason').value = '';
+      
+      showModal('modalStarReason');
+      setTimeout(() => document.getElementById('inpStarReason').focus(), 150);
+    }
+
+    function setQuickReason(text) {
+      document.getElementById('inpStarReason').value = text;
+    }
+
+    // تأكيد النجوم وتطبيقها مع السبب
+    function commitStarAward() {
+      const { studentId, starsCount } = pendingStarAward;
+      const student = students.find(x => x.id === studentId);
+      const reason = document.getElementById('inpStarReason').value.trim();
+
+      if (student) {
+        student.stars = starsCount;
+
+        // إذا كتب المعلم سبب، يتم ربطه بملاحظة الطالب
+        if (reason) {
+          student.note = student.note ? `${student.note} | ${reason}` : reason;
+        }
+
+        saveLiveState();
+        renderTable();
+
+        // تأثير الاحتفال
+        if (starsCount >= 4) {
+          confetti({ particleCount: 100, spread: 80, origin: { y: 0.6 } });
+        }
+
+        showToast(`تم رصد ${starsCount} نجوم لـ ${student.name} بنجاح! ⭐`);
+      }
+
+      hideModal('modalStarReason');
+    }
+
     function setAttendance(id, val) {
       const s = students.find(x => x.id === id);
       if (s) { s.status = val; saveLiveState(); renderTable(); }
-    }
-
-    function setStars(id, count) {
-      const s = students.find(x => x.id === id);
-      if (s) {
-        s.stars = (s.stars === count) ? count - 1 : count;
-        if (s.stars === 5) confetti({ particleCount: 80, spread: 75, origin: { y: 0.6 } });
-        saveLiveState();
-        renderTable();
-      }
     }
 
     function toggleHW(id) {
@@ -1163,7 +1239,6 @@
       }
     }
 
-    // البحث والفلترة
     function handleSearchChange(val) { searchQuery = val; renderTable(); }
     function applyFilter(f, btn) {
       activeFilter = f;
@@ -1179,7 +1254,6 @@
       document.getElementById('val-hw-completed').innerText = students.filter(x => x.homework).length;
     }
 
-    // إدارة النوافذ المنبثقة
     function showModal(id) { document.getElementById(id).style.display = 'flex'; }
     function hideModal(id) { document.getElementById(id).style.display = 'none'; }
 
@@ -1212,7 +1286,6 @@
       showToast(`تمت إضافة الطالب: ${name}`);
     }
 
-    // حفظ اليوم ونقله للأرشيف
     function showSaveDayModal() {
       const now = new Date();
       const formatted = now.toLocaleDateString('ar-SA', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
@@ -1258,7 +1331,6 @@
       document.getElementById('archive-count-tag').innerText = archive.length;
     }
 
-    // استعراض بطاقات الأرشيف
     function renderArchive() {
       const c = document.getElementById('archiveDeckContainer');
       c.innerHTML = '';
@@ -1320,7 +1392,7 @@
           <td>${s.classGrade}</td>
           <td>${stText}</td>
           <td>⭐ ${s.stars}</td>
-          <td>${s.homework ? 'مُسلَّم' : 'لم يسلّم'}</td>
+          <td>${s.homework ? 'مُسلَّم' : 'لم يسلّم'}</td>
           <td><span style="color: #38bdf8;">${s.note || '-'}</span></td>
         `;
         tbody.appendChild(tr);
@@ -1356,7 +1428,6 @@
       }
     }
 
-    // تصدير إكسيل
     function exportToExcel() {
       const data = students.map((s, idx) => ({
         "م": idx + 1,
@@ -1364,7 +1435,7 @@
         "الفصل": s.classGrade,
         "الحالة": s.status === 'present' ? 'حاضر' : (s.status === 'late' ? 'متأخر' : 'غائب'),
         "النجوم": s.stars,
-        "الواجب": s.homework ? 'مُسلَّم' : 'لم يسلّم',
+        "الواجب": s.homework ? 'مُسلَّم' : 'لم يسلّم',
         "المشاركة": s.participation ? 'متفاعل' : 'خامل',
         "الملاحظات": s.note || '-'
       }));
@@ -1386,7 +1457,7 @@
         "الفصل": s.classGrade,
         "الحالة": s.status === 'present' ? 'حاضر' : (s.status === 'late' ? 'متأخر' : 'غائب'),
         "النجوم": s.stars,
-        "الواجب": s.homework ? 'مُسلَّم' : 'لم يسلّم',
+        "الواجب": s.homework ? 'مُسلَّم' : 'لم يسلّم',
         "الملاحظات": s.note || '-'
       }));
 
@@ -1397,7 +1468,6 @@
       showToast(`تم تصدير إكسيل لـ: ${rec.title}`);
     }
 
-    // النسخ الاحتياطي الكامل والاسترجاع
     function downloadBackup() {
       const backupObj = {
         app: "SmartStudentPlatform",
